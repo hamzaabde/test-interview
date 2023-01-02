@@ -12,7 +12,6 @@ import { User } from "@prisma/client"
  ** just create it in this file and write a comment above with file name that you would give
  */
 
-//  components/TextField.tsx
 interface TextFieldProps {
 	value: string
 	label: string
