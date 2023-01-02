@@ -26,7 +26,7 @@ export const getServerSideProps = async () => {
 		await fetchUsers()
 	).map((user) => ({
 		...user,
-		totalPosts: posts.filter(({ id }) => id === user.id).length,
+		totalPosts: posts.filter(({ userId }) => userId === user.id).length,
 	}))) as UserWithTotalPosts[]
 
 	return {

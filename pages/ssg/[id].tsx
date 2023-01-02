@@ -12,11 +12,15 @@ export async function fetchUser(id: string) {
 
 export const getStaticPaths = async () => {
 	const users: User[] = await fetchUsers()
-	const paths: string[] = users.map((user: User) => user.id.toString())
+	const paths = users.map((user: User) => ({
+		params: {
+			id: user.id.toString(),
+		},
+	}))
 
 	return {
 		paths,
-		fallback: false,
+		fallback: true,
 	}
 }
 

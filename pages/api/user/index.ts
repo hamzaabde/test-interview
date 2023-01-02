@@ -23,7 +23,7 @@ async function createUser(user: User) {
 
 export default async function handler(
 	req: NextApiRequest,
-	res: NextApiResponse<User[] | Error>
+	res: NextApiResponse<User | User[] | Error>
 ) {
 	if (req.method === "GET") {
 		try {
@@ -36,21 +36,30 @@ export default async function handler(
 	}
 
 	if (req.method === "POST") {
-		const { name, surname, email, age } = req.body
-
 		try {
-			const useExists = await prisma.user.findFirst({
+			const { name, surname, email, age } = JSON.parse(req.body)
+
+			const userExists = await prisma.user.findFirst({
 				where: {
-					email,
+					email: {
+						equals: email,
+					},
 				},
 			})
 
-			if (useExists) throw Error("user already exists")
+			if (userExists) throw Error("user already exists")
 
-			await createUser({ name, surname, email, age } as User)
+			const user = await createUser({
+				name,
+				surname,
+				email,
+				age: Number(age),
+			} as User)
+
+			res.status(201).json(user)
 		} catch (e) {
 			console.log(e)
-			res.status(400).json({ error: "Unable to create user" })
+			res.status(400).json({ error: "User already exists" })
 		}
 	}
 }
